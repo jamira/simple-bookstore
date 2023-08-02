@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { Book, Cart } from "../types";
 
-const api = "https://json-server-iota-one.vercel.app/books";
+const api = "http://localhost:3000/books";
 
 export const useCounterBooks = defineStore("books", {
   state: () => ({
