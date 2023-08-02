@@ -22,7 +22,7 @@
       "author": "F. Scott Fitzgerald",
       "isbn": "9780743273565",
       "price": 12.99,
-      "availableStock": 2
+      "availableStock": 1
     },
     {
       "id": 4,
@@ -189,6 +189,13 @@
       "isbn": "9780061120084",
       "bookId": "1",
       "id": 4
+    },
+    {
+      "title": "The Great Gatsby",
+      "author": "F. Scott Fitzgerald",
+      "isbn": "9780743273565",
+      "bookId": "3",
+      "id": 5
     }
   ]
 }
