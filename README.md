@@ -2,6 +2,9 @@
 
 This challenge features a user-friendly landing page that showcases a list of available books along with essential information (extracted from the API). The landing page offers seamless navigation to dedicated pages for each book, presenting additional details in alignment with API data. And it has simple cart page where user can buy a copy of the book and can do checkout.
 
+Demo: [https://bookstore-server-efb80.web.app](https://bookstore-server-efb80.web.app)
+
+
 ## Features
 1. **Landing Page:** The homepage exhibits a curated collection of books, displaying their titles, authors, and other pertinent details. This enables users to quickly browse through the available books.
 2. **Book Details Page:** Each book has its own dedicated page, accessible by clicking on its title or associated link. This page presents comprehensive information about the selected book, enhancing the user's understanding of its content.
