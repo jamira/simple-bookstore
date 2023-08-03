@@ -26,5 +26,5 @@ Demo: [https://bookstore-server-efb80.web.app](https://bookstore-server-efb80.we
 ## Getting Started
 1. Clone or download the repository to your local machine.
 2. Install the required dependencies by running`npm install` in the terminal.
-3. Rename .env.sample to .env and key in the API Url. In my case I uploaded the endpoint in Serverless Environment
+3. Open .env.sample to .env. Within the .env file, input the API URL.
 4. Start the app by running `npm run dev`

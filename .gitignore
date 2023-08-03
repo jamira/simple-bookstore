@@ -18,6 +18,10 @@ dist-ssr
 # Test DB
 db.json
 
+# FB
+.firebase.json
+.firebaserc
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
