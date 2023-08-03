@@ -14,7 +14,7 @@
       "author": "George Orwell",
       "isbn": "9780451524935",
       "price": 9.99,
-      "availableStock": 6
+      "availableStock": 4
     },
     {
       "id": 3,
@@ -196,6 +196,13 @@
       "isbn": "9780743273565",
       "bookId": "3",
       "id": 5
+    },
+    {
+      "title": "1984",
+      "author": "George Orwell",
+      "isbn": "9780451524935",
+      "bookId": "2",
+      "id": 6
     }
   ]
 }

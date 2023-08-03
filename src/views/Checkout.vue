@@ -13,18 +13,18 @@ const bookStore = useCounterBooks();
 const router = useRouter()
 
 const customer: Customer = reactive({
-  fname: "Johny",
-  lname: "Dee",
-  email: "johnydee@gmail.com",
-  contact: "123414213",
-  address: "Blkdasdw 2112",
-  country: "Singapore",
-  city: "NY",
-  zipcode: "32321",
+  fname: "John",
+  lname: "Doe",
+  email: "johndoe@xyz.com",
+  contact: "1-945-517-1942 x746",
+  address: "153 Walsh Mission",
+  country: "United States of America",
+  city: "Crystaltown",
+  zipcode: "63787",
 });
 
 const handleSubmitPayload = async (): Promise<void> => {
-  const response = await bookStore.checkout();
+  const response = await bookStore.makePurchase();
   if (response) {
     router.push('/thank-you')
     bookStore.$state.cart = []

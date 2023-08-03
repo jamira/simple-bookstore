@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Environment configuration files
+.env
+
+# Test DB
+db.json
 
 # Editor directories and files
 .vscode/*

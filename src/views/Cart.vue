@@ -14,10 +14,7 @@ const bookStore = useCounterBooks();
   <div v-if="bookStore.cartCount > 0">
     <div class="flex flex-wrap items-center -mx-4">
       <div class="w-full xl:w-8/12 mb-8 xl:mb-0 px-4">
-        <CartItems
-          :heading="['Description', 'Price', 'Quantity', 'Subtotal']"
-          :data="bookStore.cart"
-        />
+        <CartItems :data="bookStore.cart" />
       </div>
       <div class="w-full xl:w-4/12 px-4">
         <OrderSummary>
@@ -36,6 +33,6 @@ const bookStore = useCounterBooks();
   </div>
   <div v-else class="flex flex-col items-center h-96 justify-center">
     <h3 class="text-black font-medium text-3xl mb-6">No Cart Items</h3>
-    <img src="../assets/empty.svg" alt="No Cart Items" class="max-w-xs">
+    <img src="../assets/empty.svg" alt="No Cart Items" class="max-w-xs" />
   </div>
 </template>

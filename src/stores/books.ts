@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { Book, Cart } from "../types";
 
-const api = "http://localhost:3000/books";
+const api = import.meta.env.VITE_API_BOOKS;
 
 export const useCounterBooks = defineStore("books", {
   state: () => ({
@@ -25,113 +25,68 @@ export const useCounterBooks = defineStore("books", {
         if (!response.ok) {
           throw new Error("Network error. please try again");
         }
-        const data = await response.json();
-        this.books = data;
+        const { books } = await response.json();
+        this.books = books;
       } catch (error) {
         this.$state.error = error as string;
       }
     },
-    async fetchBook(id: number): Promise<any> {
+    async fetchBook(id: number): Promise<void> {
       try {
         const response = await fetch(`${api}/${id}`);
         if (!response.ok) {
           throw new Error("Network error. please try again");
         }
-        const data = await response.json();
-        this.book = data;
-        return data;
+        const { book } = await response.json();
+        this.book = book;
       } catch (error) {
         this.$state.error = error as string;
       }
     },
-    async fetchAndValidateBook(cartItem: Cart): Promise<Book> {
-      const book = await this.fetchBook(cartItem.id) as Book;
-      
-      if (!book) {
-        throw new Error("Book not found.");
-      }
-    
-      if (book.availableStock <= 0) {
-        throw new Error(`Book ${book.title} is currently out of stock.`);
-      }
-    
-      if (book.availableStock < cartItem.qty) {
-        throw new Error(`Quantity exceeded. The book ${book.title} exceeds the available quantity."`);
-      }
-    
-      return book;
-    },
-    async makePurchase(cartItem: Cart): Promise<any> {  try {
-      const book = await this.fetchAndValidateBook(cartItem);
-      
-      book.availableStock -= cartItem.qty;
-   
-      const response = await fetch(`${api}/${cartItem.id}`, {
-        method: "PUT",
-        body: JSON.stringify(book),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error("Failed to update book stock. Please try again.");
-      }
-  
-      const bookPurchased = { ...book };
-      const { id, price, availableStock, ...bookPurchasedData } = bookPurchased;
-  
+    async purchase(book: Book): Promise<any> {
       try {
-        const purchaseResponse = await fetch(`${api}/${cartItem.id}/purchases`, {
+        const response = await fetch(`${api}/${book.id}/purchase`, {
           method: "POST",
-          body: JSON.stringify(bookPurchasedData),
+          body: JSON.stringify(book),
           headers: {
             "Content-Type": "application/json",
-          },
-        });
-  
-        if (!purchaseResponse.ok) {
-          throw new Error("Failed to make the purchase. Please try again.");
+          }
+        })
+
+        if (!response.ok) {
+          throw new Error("Failed to purchase book.");
         }
-  
-        const purchaseData = await purchaseResponse.json();
-        return purchaseData;
-      } catch (error) {
-        throw new Error("An error occurred while processing the purchase.");
-      }
-    } catch (error) {
-      throw new Error("An error occurred while making the purchase.");
-    }
-    },
-    async checkout(): Promise<any> {
-      try {
-       return await Promise.all(
-          this.cart.map((cartItem: Cart) => this.makePurchase(cartItem))
-        );
+
+        return response
+
       } catch (error) {
         this.$state.error = error as string;
       }
     },
-    addToCart(cartItem: Cart, qty: number = 1) {
-      const existingItemIndex = this.cart.findIndex(
-        (item) => item.id === cartItem.id
-      );
-      if (existingItemIndex !== -1) {
-        this.cart[existingItemIndex].qty += qty;
-      } else {
-        this.cart.push({ ...cartItem, qty });
-      }
+    async makePurchase(): Promise<any> {
+      try {
+        return await Promise.all(
+           this.cart.map((cartItem: Cart) => this.purchase(cartItem))
+         );
+       } catch (error) {
+         this.$state.error = error as string;
+       }
     },
-    updateCartItemQuantity(bookId: number, increment: boolean) {
-      const itemToUpdate = this.cart.find(({ id }) => id === bookId);
-      if (itemToUpdate) {
-        if (increment) {
-          itemToUpdate.qty++;
+    async addToCart(cartItem: Cart, qty: number = 1): Promise<void> {
+      return new Promise((resolve) => {
+        const existingItemIndex = this.cart.findIndex(
+          (item: Cart) => item.id === cartItem.id
+        );
+        
+        if (existingItemIndex !== -1) {
+          this.cart[existingItemIndex].qty += qty;
         } else {
-          itemToUpdate.qty--;
+          this.cart.push({ ...cartItem, qty });
         }
-      }
-    },
+    
+        resolve();
+      })
+    }, 
     deleteCartItem(bookId: number): void {
       this.cart = this.cart.filter(({ id }) => id !== bookId);
     },
