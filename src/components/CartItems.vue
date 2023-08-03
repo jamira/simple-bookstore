@@ -1,98 +1,88 @@
 <script lang="ts" setup>
-import { computed, defineComponent } from "vue";
+import { defineComponent } from "vue";
 import { useCounterBooks } from "../stores/books.ts";
-import Counter from "./Counter.vue";
+
 import Button from "./Button.vue";
 import Image from "./Image.vue";
 import { Cart } from "../types";
 
-const { heading } = defineProps({
-  heading: { type: Array, required: true },
+const { data } = defineProps({
   data: { type: Array<Cart>, required: true },
 });
 
 const bookStore = useCounterBooks();
 
-defineComponent({ components: { Counter, Button, Image } });
+defineComponent({ components: { Button, Image } });
 
-const formatHeading = computed(() => {
-  return heading.map((name, index) => {
-    let className: string;
-
-    if (index === 0) {
-      className = "lg:w-2/3";
-    } else if (index === 2) {
-      className = "lg:w-3/6 text-center";
-    } else if (index === heading.length - 1) {
-      className = "lg:w-1/6 text-right";
-    } else {
-      className = "lg:w-1/6";
-    }
-
-    return {
-      name,
-      columnClass: className,
-    };
-  });
-});
 </script>
 
 <template>
-  <div class="hidden lg:flex w-full">
-    <div
-      v-for="(header, index) in formatHeading"
-      :key="index"
-      :class="`w-full ${header.columnClass}`"
-    >
-      <h4 class="mb-6 font-bold font-heading text-black">{{ header.name }}</h4>
-    </div>
-    <div class="w-full lg:w-1/6"></div>
-  </div>
-  <div class="mb-12 py-6 border-t border-b border-blueGray-800">
+  <div class="xl:px-4">
     <div
       v-for="(item, index) in data"
       :key="item.id"
-      class="flex flex-wrap items-center -mx-4"
-      :class="`${index === data.length - 1 ? `` : `mb-6 md:mb-3`}`"
+      class="relative flex flex-wrap items-center xl:justify-between -mx-4"
+      :class="`${
+        index === data.length - 1
+          ? ``
+          : `mb-8 pb-8 border-b border-blueGray-800 border-opacity-40`
+      }`"
     >
-      <div class="w-full md:w-4/6 lg:w-2/5 px-4 mb-6 md:mb-0">
-        <div class="flex -mx-4 flex-wrap items-center">
-          <div class="w-full md:w-1/3 px-4 mb-3">
-            <div
-              class="flex items-center justify-center w-full md:w-24 h-32 bg-gray-100"
+      <div class="relative w-full md:w-auto px-4 mb-6 xl:mb-0">
+        <router-link
+          :to="`/${item.id.toString()}`"
+          class="block mx-auto max-w-max"
+        >
+          <Image :src="`${item.id}`" class="h-28 object-cover" />
+        </router-link>
+      </div>
+      <div class="w-full md:w-auto px-4 mb-6 xl:mb-0">
+        <router-link
+          :to="`/${item.id.toString()}`"
+          class="block mb-2 text-xl font-heading font-medium hover:underline text-black"
+        >
+          {{ item.title }}
+        </router-link>
+        <div class="flex flex-wrap">
+          <p class="mr-4 text-sm font-medium">
+            <span class="font-heading" data-config-id="auto-txt-9-1"
+              >Author:</span
             >
-              <Image :src="`${item.id}`" class="h-full object-contain" />
-            </div>
-          </div>
-          <div class="w-2/3 px-4">
-            <h3 class="mb-1 text-2xl font-bold font-heading">
-              <router-link :to="`/${item.id.toString()}`" class="text-black">
-                {{ item.title }}
-              </router-link>
-            </h3>
-            <p class="text-black text-sm">{{ item.author }}</p>
-          </div>
+            <span class="ml-2 text-gray-500" data-config-id="auto-txt-10-1"
+              >{{ item.author }}</span
+            >
+          </p>
+          <p class="text-sm font-medium">
+            <span data-config-id="auto-txt-11-1">ISBN:</span>
+            <span class="ml-2 text-gray-500" data-config-id="auto-txt-12-1"
+              >{{ item.isbn }}</span
+            >
+          </p>
         </div>
       </div>
-      <div class="hidden lg:block lg:w-2/12 px-4">
-        <p class="text-lg text-black font-bold font-heading">
-          {{ `$${item.price}` }}
-        </p>
+      <div class="w-full xl:w-auto px-4 mb-6 xl:mb-0 mt-6 xl:mt-0">
+        <div class="flex items-center">
+          <h4
+            class="mr-4 font-heading font-medium"
+            data-config-id="auto-txt-13-1"
+          >
+            Qty:
+          </h4>
+          <input
+            class="w-12 px-1 py-1 text-center placeholder-gray-400 text-gray-500 bg-gray-100 border-2 border-blueGray-800 outline-none rounded-md"
+            type="text"
+            readonly
+            :placeholder="`${item.qty}`"
+          />
+        </div>
       </div>
-      <div class="w-auto md:w-1/6 lg:w-3/12 px-4">
-        <Counter
-          :qty="item.qty"
-          @handleIncrement="bookStore.updateCartItemQuantity(item.id, true)"
-          @handleDecrement="bookStore.updateCartItemQuantity(item.id, false)"
-        />
+      <div class="w-full xl:w-auto px-4">
+        <span class="text-xl font-heading font-medium text-black">
+          <span class="text-md" data-config-id="auto-txt-15-1">$</span>
+          <span data-config-id="auto-txt-14-1">{{ item.price }}</span>
+        </span>
       </div>
-      <div class="w-auto md:w-1/6 lg:w-1/12 px-4">
-        <p class="text-lg text-black font-bold font-heading">
-          {{ `$${item.qty * item.price}` }}
-        </p>
-      </div>
-      <div class="w-auto md:w-1/6 lg:w-1/12 px-4 text-right">
-        <Button
+      <Button
           type="button"
           @handleClick="bookStore.deleteCartItem(item.id)"
           class="ft lx yz ze alo aqr axp bkx"
@@ -111,7 +101,6 @@ const formatHeading = computed(() => {
             ></path>
           </svg>
         </Button>
-      </div>
     </div>
   </div>
 </template>

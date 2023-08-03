@@ -11,17 +11,17 @@ const shipping: Ref<number> = ref(10)
         <h2 class="mb-6 text-2xl font-bold font-heading text-black">Cart totals
         </h2>
         <div class="flex mb-8 items-center justify-between pb-5 border-b border-gray-200">
-            <span class="text-gray-400">Subtotal</span>
+            <span class="text-gray-500">Subtotal</span>
             <span class="text-lg font-bold font-heading text-black">{{
                 `$${bookStore.orderTotal.toFixed()}` }}</span>
         </div>
         <h4 class="mb-2 text-lg font-bold font-heading text-black">Shipping</h4>
         <div class="flex mb-2 justify-between items-center">
-            <span class="text-gray-400">Next day</span>
+            <span class="text-gray-500">Next day</span>
             <span class="text-lg font-bold font-heading text-black">{{ `$${shipping.toFixed()}` }}</span>
         </div>
         <div class="flex mb-10 justify-between items-center">
-            <span class="text-gray-400">Shipping to Singapore</span>
+            <span class="text-gray-500">Shipping to Singapore</span>
             <span class="text-lg font-bold font-heading text-black">-</span>
         </div>
         <div class="flex mb-10 justify-between items-center">
