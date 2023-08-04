@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from "vue";
-const { type, title, message } = defineProps({
+const { type, title } = defineProps({
   type: {
     type: String,
     default: "info",
@@ -9,10 +9,7 @@ const { type, title, message } = defineProps({
   },
   title: {
     type: String,
-  },
-  message: {
-    type: String,
-  },
+  }
 });
 
 const getTypeClass = computed(() => {
@@ -29,6 +26,6 @@ const getTypeClass = computed(() => {
 <template>
   <div :class="getTypeClass" class="p-4 border-l-4 mb-6">
     <p class="font-bold" v-if="title">{{ title }}</p>
-    <p v-if="message">{{ message }}</p>
+    <slot></slot>
   </div>
 </template>

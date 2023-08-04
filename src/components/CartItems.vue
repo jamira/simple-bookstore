@@ -33,7 +33,7 @@ defineComponent({ components: { Button, Image } });
           :to="`/${item.id.toString()}`"
           class="block mx-auto max-w-max"
         >
-          <Image :src="`${item.id}`" class="h-28 object-cover" />
+          <Image :src="`${item.id}`" class="h-28 w-28 object-fit" />
         </router-link>
       </div>
       <div class="w-full md:w-auto px-4 mb-6 xl:mb-0">
