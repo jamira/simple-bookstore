@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, reactive, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import type { Ref } from "vue";
 
 import Image from "../components/Image.vue";
@@ -9,6 +10,7 @@ import { useCounterBooks } from "../stores/books.ts";
 import { Cart } from "../types";
 
 const bookStore = useCounterBooks();
+const router = useRouter()
 
 const quantity: Ref<number> = ref(1);
 const bookInformation = reactive({ author: "", isbn: "", availableStock: 0 });
@@ -19,6 +21,7 @@ const book = computed(() => {
 
 const handleCart = () => {
   bookStore.addToCart(bookStore.book as Cart, quantity.value);
+  router.push('/cart')
 };
 
 onMounted(() => {

@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { Book, Cart } from "../types";
+import axios from 'axios';
 
 const api = import.meta.env.VITE_API_BOOKS;
 
@@ -9,6 +10,7 @@ export const useCounterBooks = defineStore("books", {
     book: <Book>{},
     cart: <Cart[]>[],
     error: null as string | null,
+    isResolved: false
   }),
   getters: {
     cartCount: (state) =>
@@ -21,57 +23,56 @@ export const useCounterBooks = defineStore("books", {
   actions: {
     async fetchBooks(): Promise<void> {
       try {
-        const response = await fetch(api);
-        if (!response.ok) {
-          throw new Error("Network error. please try again");
-        }
-        const { books } = await response.json();
+        const response = await axios.get(`${api}`);
+        const { books } = response.data;
         this.books = books;
       } catch (error) {
-        this.$state.error = error as string;
+        this.setError(error as string);
       }
     },
     async fetchBook(id: number): Promise<void> {
       try {
-        const response = await fetch(`${api}/${id}`);
-        if (!response.ok) {
-          throw new Error("Network error. please try again");
-        }
-        const { book } = await response.json();
+        const response = await axios.get(`${api}/${id}`);
+        const { book } = response.data;
         this.book = book;
       } catch (error) {
-        this.$state.error = error as string;
+        this.setError(error as string);
       }
     },
     async purchase(book: Book): Promise<any> {
       try {
-        const response = await fetch(`${api}/${book.id}/purchase`, {
-          method: "POST",
-          body: JSON.stringify(book),
+       const response = await axios.post(`${api}/${book.id}/purchase`, book, {
           headers: {
             "Content-Type": "application/json",
-          }
-        })
+          },
+        });
 
-        if (!response.ok) {
-          throw new Error("Failed to purchase book.");
-        }
+        this.deleteCartItem(book.id)
 
         return response
 
       } catch (error) {
-        this.$state.error = error as string;
+        this.setError(`Request for ${book.title} failed`)
+        throw book;
       }
     },
-    async makePurchase(): Promise<any> {
+    async makePurchase(): Promise<void> {
       try {
-        return await Promise.all(
-           this.cart.map((cartItem: Cart) => this.purchase(cartItem))
-         );
-       } catch (error) {
-         this.$state.error = error as string;
-       }
-    },
+        const purchasePromises = this.cart.map(cartItem => this.purchase(cartItem));
+        Promise.all(purchasePromises)
+          .then(() => {
+            // console.log('All requests resolved:', resolvedItems);
+            this.isResolved = true
+            this.cart = [];
+          })
+          .catch(() => {
+            // console.log('Some requests rejected:', rejectedItems);
+            this.isResolved = false
+          });
+      } catch (error) {
+        this.setError(error as string);
+      }
+    },    
     async addToCart(cartItem: Cart, qty: number = 1): Promise<void> {
       return new Promise((resolve) => {
         const existingItemIndex = this.cart.findIndex(
@@ -89,6 +90,9 @@ export const useCounterBooks = defineStore("books", {
     }, 
     deleteCartItem(bookId: number): void {
       this.cart = this.cart.filter(({ id }) => id !== bookId);
+    },
+    setError(errorMessage: string) {
+      this.error = errorMessage;
     },
     clearError() {
       this.$state.error = null;

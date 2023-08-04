@@ -14,11 +14,9 @@ onUnmounted(() => {
 
 <template>
   <div class="books flex flex-wrap -mx-4 -mb-8">
-    <Alert
-      v-if="bookStore.$state.error"
-      type="error"
-      :message="`${bookStore.$state.error}`"
-    />
+    <Alert v-if="bookStore.$state.error" type="error">
+      {{ bookStore.$state.error }}
+    </Alert>
     <BookList v-else />
   </div>
 </template>

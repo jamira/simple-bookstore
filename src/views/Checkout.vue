@@ -7,8 +7,6 @@ import { useRouter } from "vue-router";
 import OrderSummary from "../components/OrderSummary.vue";
 import Input from "../components/Input.vue";
 import Button from "../components/Button.vue";
-import Alert from "../components/Alert.vue";
-
 const bookStore = useCounterBooks();
 const router = useRouter()
 
@@ -24,11 +22,8 @@ const customer: Customer = reactive({
 });
 
 const handleSubmitPayload = async (): Promise<void> => {
-  const response = await bookStore.makePurchase();
-  if (response) {
-    router.push('/thank-you')
-    bookStore.$state.cart = []
-  }
+  await bookStore.makePurchase();
+  router.push('/thank-you')
 };
 
 const formIsValid = computed(() => {
@@ -42,7 +37,6 @@ onUnmounted(() => {
 <template>
   <div class="flex flex-wrap -mx-4">
     <div class="w-full xl:w-8/12 mb-8 xl:mb-0 px-4">
-      <Alert v-if="bookStore.$state.error" type="error" :message="`${bookStore.$state.error}`" />
       <form>
         <div class="flex flex-wrap -mx-4 mb-6">
           <Input label="Firstname" :value="customer.fname" @set-input-value="(val: string) => customer.fname = val"
